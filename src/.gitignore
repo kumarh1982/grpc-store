@@ -1,0 +1,8 @@
+*
+!*.*
+*.o
+
+!Makefile
+!.gitignore
+!a.out
+
