@@ -17,10 +17,10 @@
 ### How You Are Going to Implement It ( Step-by-step suggestions)
 
 1. Install  [GRPC] (http://www.grpc.io/docs/tutorials/basic/c.html) and [Protobuf] (https://github.com/google/protobuf)
-2. Make sure you understand how GRPC- synchronous and asynchronous calls work. Understand the given helloworld example. [Example] (https://github.com/grpc/grpc/tree/master/examples/cpp/helloworld) You will be building your store with asynchronous mechanisms ONLY.
+2. Make sure you understand how GRPC- synchronous and asynchronous calls work. Understand the given helloworld [example].(https://github.com/grpc/grpc/tree/master/examples/cpp/helloworld) You will be building your store with asynchronous mechanisms ONLY.
 3. Establish asynchronous GRPC communication between -
     - Your store and user client. 
-    - Your store and the vendors. 
+    - Your store and the vendors.  
   ( We will be providing you the vendors and the user clients soon.)
 4. Create your thread pool and use it. Where will you use it and for what?
    Upon receiving a client request, you store will assign a thread from the thread pool to the incoming request for processing.
@@ -36,9 +36,8 @@
   - Multiple concurrent requests from clients
   - Be stateless so far as client requests are concerned (once the client request is serviced it can forget the client)
   - Manage the connections to the client requests and the requests it makes to the 3rd party vendors.
-2.  We will provide you with a  “list” of products that the store sells.
-3.  Server will get the vendor addresses from a file with line separated strings <ip:port>
-4.  Your server should be able to accept command line input of the address on which it is going to expose its service and maximum number of threads its threadpool should have.
+2.  Server will get the vendor addresses from a file with line separated strings <ip:port>
+3.  Your server should be able to accept command line input of the address on which it is going to expose its service and maximum number of threads its threadpool should have.
 
 ### Given to You
   1. run_tests.cc - This will simulate real world users sending concurrent product queries. This will be released soon to you.
