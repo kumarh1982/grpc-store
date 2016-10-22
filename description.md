@@ -17,7 +17,7 @@
 ### How You Are Going to Implement It ( Step-by-step suggestions)
 
 1. Install  [GRPC] (http://www.grpc.io/docs/tutorials/basic/c.html) and [Protobuf] (https://github.com/google/protobuf)
-2. Make sure you understand how GRPC- synchronous and asynchronous calls work. Understand the given helloworld [example].(https://github.com/grpc/grpc/tree/master/examples/cpp/helloworld) You will be building your store with asynchronous mechanisms ONLY.
+2. Make sure you understand how GRPC- synchronous and asynchronous calls work. Understand the given helloworld [example](https://github.com/grpc/grpc/tree/master/examples/cpp/helloworld). You will be building your store with asynchronous mechanisms ONLY.
 3. Establish asynchronous GRPC communication between -
     - Your store and user client. 
     - Your store and the vendors.  
