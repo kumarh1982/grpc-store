@@ -12,7 +12,7 @@ PROTOS_PATH = ../external/protos/
 
 vpath %.proto $(PROTOS_PATH)
 
-all: store
+all: system-check store
 
 store: store.pb.o store.grpc.pb.o store.o
 	$(CXX) $^ $(LDFLAGS) -o $@
