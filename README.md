@@ -6,7 +6,7 @@ Clone this repository:
 
 # Dependencies
   - `grpc` [How to Install](https://github.com/grpc/grpc/blob/master/INSTALL.md)
-  - `protocol buffer` [How to Install](https://github.com/google/protobuf/blob/master/src/README.md)
+  - `protocol buffer` [How to Install](https://github.com/google/protobuf/blob/master/src/README.md) You need version 3.0 or higher of protoc to be able to generate code from the given proto files.
   - You need to be able to compile c++11 code on your Linux system
 
 # Keeping your code upto date
