@@ -5,9 +5,12 @@ Clone this repository:
 `git clone https://github.gatech.edu/akumar401/cs6210Project3.git`
 
 # Dependencies
-  - `grpc` [How to Install](https://github.com/grpc/grpc/blob/master/INSTALL.md)
-  - `protocol buffer` [How to Install](https://github.com/google/protobuf/blob/master/src/README.md) You need version 3.0 or higher of protoc to be able to generate code from the given proto files.
-  - You need to be able to compile c++11 code on your Linux system
+  1. `grpc` [How to Install](https://github.com/grpc/grpc/blob/master/INSTALL.md)
+  2. `protocol buffer` [How to Install](https://github.com/google/protobuf/blob/master/src/README.md) 
+    - You need version 3.0 of protoc to be able to generate code from the given proto files.
+    - I would suggest the best place to install this version is from the grpc repository itself. (`grpc/third_party/protobuf/`)
+    - In the instructions for installing protoc 3.0, `make check` might fail. continue installing even after that. If compilation works fine with this new protoc, all set for the project.
+  3. You need to be able to compile c++11 code on your Linux system
 
 # Keeping your code upto date
 Although you are not submitting your soolution through t-square only, after the clone, we recommend creating a branch and developing your agents on that branch:
