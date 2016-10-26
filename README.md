@@ -12,6 +12,23 @@ Clone this repository:
     - In the instructions for installing protoc 3.0, `make check` might fail. continue installing even after that. If compilation works fine with this new protoc, all set for the project.
   3. You need to be able to compile c++11 code on your Linux system
 
+# One way to get the dependencies
+1. [sudo] apt-get install build-essential autoconf libtool
+2. Create a new directory somewhere where you will pull code from github to install grpc and protobuf.
+     Then: `cd  $this_new_dir`
+2. git clone --recursive `-b $(curl -L http://grpc.io/release)` https://github.com/grpc/grpc
+3. cd  grpc/third_party/protobuf
+4. sudo apt-get install autoconf automake libtool curl make g++ unzip
+5. ./autogen.sh (it might fail, try further steps anyhow, might not create problems)
+6. ./configure
+7. sudo make
+8. make check (it might fail, try further steps anyhow, might not create problems)
+9. sudo make install
+10. sudo ldconfig
+11. cd ../../
+12. make
+13. sudo make install 
+
 # Keeping your code upto date
 Although you are not submitting your soolution through t-square only, after the clone, we recommend creating a branch and developing your agents on that branch:
 
