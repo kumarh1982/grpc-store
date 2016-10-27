@@ -30,7 +30,7 @@ Clone this repository:
 13. sudo make install 
 
 # Keeping your code upto date
-Although you are not submitting your soolution through t-square only, after the clone, we recommend creating a branch and developing your agents on that branch:
+Although you are going to submit your solution through t-square only, after the clone, we recommend creating a branch and developing your code on that branch:
 
 `git checkout -b develop`
 
