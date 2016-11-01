@@ -37,7 +37,7 @@
   - Be stateless so far as client requests are concerned (once the client request is serviced it can forget the client)
   - Manage the connections to the client requests and the requests it makes to the 3rd party vendors.
 2.  Server will get the vendor addresses from a file with line separated strings <ip:port>
-3.  Your server should be able to accept command line input of the address on which it is going to expose its service and maximum number of threads its threadpool should have.
+3.  Your server should be able to accept `command line input` of the `address` on which it is going to expose its service and `maximum number of threads` its threadpool should have.
 
 ### Given to You
   1. run_tests.cc - This will simulate real world users sending concurrent product queries. This will be released soon to you.
