@@ -36,6 +36,7 @@ using vendor::BidReply;
 std::string filename = "vendor_addresses.txt";
 unsigned int numberOfVendors = 0;
 std::vector<std::string> vendorList;
+ThreadPool* pool;
 
 void populateVendors () {
 	std::ifstream myfile (filename);
@@ -176,16 +177,34 @@ class ServerImpl final {
 			  //info = reply_.add_products();
 			  //info->set_vendor_id("test1");
 			  //info->set_price(4321.0);
-			  std::string name = request_.product_name();
-			  askVendors* vendorInterface = new askVendors(vendorList);
+			  std::string name = request_.product_name();  
 			  std::vector<BidReply> result;
-			  vendorInterface->getProductBid(name,&result);
+			  std::vector<BidReply> result2;
+			  result = result2;
+
+			  //with threadpool
+			  std::vector<std::string> tempList = vendorList; //local variable to pass to threads
+			  auto resPointer = pool->Add([tempList,name]{
+				askVendors vendorInterface(vendorList);
+				std::vector<vendor::BidReply> tempres;
+				vendorInterface.getProductBid(name,&tempres);
+				
+				return tempres;
+			  }
+
+			  );
+			  result = resPointer.get();
+
+			  //without threadpool
+			  //askVendors* vendorInterface = new askVendors(vendorList);
+			  //vendorInterface->getProductBid(name,&result);
+
 			  for(std::vector<BidReply>::iterator it = result.begin(); it != result.end(); ++it) {
 				info = reply_.add_products();
 				info->set_vendor_id(it->vendor_id());
 				info->set_price(it->price());
 			  }
-			  delete vendorInterface;
+			  //delete vendorInterface;
 			  // And we are done! Let the gRPC runtime know we've finished, using the
 			  // memory address of this instance as the uniquely identifying tag for
 			  // the event.
@@ -249,6 +268,7 @@ class ServerImpl final {
 };
 
 int main(int argc, char** argv) {
+	pool = new ThreadPool(6);
 	populateVendors();
 	ServerImpl server;
 	server.Run();
