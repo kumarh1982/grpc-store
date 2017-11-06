@@ -22,42 +22,44 @@ public:
     unsigned ThreadCount;
 
     ThreadPool(unsigned ThreadCount_)
-        : threads(ThreadCount_) 
-        , jobs_left( 0 )
-        , stop( false )
-        , ThreadCount(ThreadCount_)
-    {   
-        for( unsigned i = 0; i < ThreadCount; ++i )
-            threads[ i ] = std::move( std::thread( [this,i]{ 
-            while( !stop ) {
-            task newjob = next();
-            newjob();
-            --jobs_left;
-            wait_var.notify_one();
-        } } ) );
-    }
+    : threads(ThreadCount_) 
+    , jobs_left( 0 )
+    , stop( false )
+    , ThreadCount(ThreadCount_)
+{   
+    for( unsigned i = 0; i < ThreadCount; ++i )
+        threads[ i ] = std::move( std::thread( [this,i]{ 
+        while( !stop ) {
+        task newjob = next(i);
+        newjob();
+        --jobs_left;
+        wait_var.notify_one();
+    } } ) );
+}
 
 
 
+
+task next(int i) {
+    task res;
+    std::unique_lock<std::mutex> job_lock( queue_mutex );
+
+    // Wait for a job if we don't have any.
+    job_needed.wait( job_lock, [this]() ->bool { return queue.size() || stop; } );
     
-    task next() {
-        task res;
-        std::unique_lock<std::mutex> job_lock( queue_mutex );
-
-        // Wait for a job if we don't have any.
-        job_needed.wait( job_lock, [this]() ->bool { return queue.size() || stop; } );
-        
-        printf("i got a job\n");
-        if( !stop ) {
-            res = queue.front();
-            queue.pop_front();
-        }
-        else { 
-            res = []{};
-            ++jobs_left;
-        }
-        return res;
+    
+    if( !stop ) {
+        res = queue.front();
+        queue.pop_front();
+        std::thread::id this_id = std::this_thread::get_id();
+        std::cout << "Got Job! Thread ID " << i << std::endl;
     }
+    else { 
+        res = []{};
+        ++jobs_left;
+    }
+    return res;
+}
 
     
     template<class F, class... Args>

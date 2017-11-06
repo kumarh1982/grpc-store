@@ -155,6 +155,7 @@ class ServerImpl final {
 		  }
 	  
 		  void Proceed() {
+			  printf("Proceed:: requestName: %s status-%d\n",request_.product_name().c_str(),status_);
 			if (status_ == CREATE) {
 			  // Make this instance progress to the PROCESS state.
 			  status_ = PROCESS;
@@ -183,7 +184,7 @@ class ServerImpl final {
 			  result = result2;
 
 			  //with threadpool
-			  std::vector<std::string> tempList = vendorList; //local variable to pass to threads
+			 /* std::vector<std::string> tempList = vendorList; //local variable to pass to threads
 			  auto resPointer = pool->Add([tempList,name]{
 				askVendors vendorInterface(vendorList);
 				std::vector<vendor::BidReply> tempres;
@@ -194,10 +195,10 @@ class ServerImpl final {
 
 			  );
 			  result = resPointer.get();
-
+			  */
 			  //without threadpool
-			  //askVendors* vendorInterface = new askVendors(vendorList);
-			  //vendorInterface->getProductBid(name,&result);
+			  askVendors* vendorInterface = new askVendors(vendorList);
+			  vendorInterface->getProductBid(name,&result);
 
 			  for(std::vector<BidReply>::iterator it = result.begin(); it != result.end(); ++it) {
 				info = reply_.add_products();
@@ -211,13 +212,19 @@ class ServerImpl final {
 			  status_ = FINISH;
 			  responder_.Finish(reply_, Status::OK, this);
 			} else {
+				
 			  GPR_ASSERT(status_ == FINISH);
 			  // Once in the FINISH state, deallocate ourselves (CallData).
-			  
+			  printf("--------------------------------------------\n");
+			  printf("------Responded successfully for %s --------\n",request_.product_name().c_str());
+			  printf("--------------------------------------------\n");
 			  delete this;
 			}
 		  }
-	  
+		  
+		  int getStatus() {
+			  return status_;
+		  }
 		 private:
 		  // The means of communication with the gRPC runtime for an asynchronous
 		  // server.
@@ -251,6 +258,7 @@ class ServerImpl final {
 		  void* tag;  // uniquely identifies a request.
 		  bool ok;
 		  while (true) {
+			//new CallData(&service_, cq_.get());
 			// Block waiting to read the next event from the completion queue. The
 			// event is uniquely identified by its tag, which in this case is the
 			// memory address of a CallData instance.
@@ -258,8 +266,15 @@ class ServerImpl final {
 			// tells us whether there is any kind of event or cq_ is shutting down.
 			GPR_ASSERT(cq_->Next(&tag, &ok));
 			GPR_ASSERT(ok);
-			static_cast<CallData*>(tag)->Proceed();
-		  }
+			//static_cast<CallData*>(tag)->Proceed();
+			
+			//try2
+			pool->Add([tag]{
+				printf("HandleRpcs:: inside while:: inside pool->Add:: tag->status = %d\n",static_cast<CallData*>(tag)->getStatus());
+				static_cast<CallData*>(tag)->Proceed();
+			  });
+			//end of try2
+		}
 		}
 	  
 		std::unique_ptr<ServerCompletionQueue> cq_;
@@ -268,10 +283,10 @@ class ServerImpl final {
 };
 
 int main(int argc, char** argv) {
-	pool = new ThreadPool(6);
-	populateVendors();
+	pool = new ThreadPool(20); //create a threadpool
+	populateVendors(); //fills up vendorList from file for future use
 	ServerImpl server;
-	server.Run();
+	server.Run(); //start the server
   
 	return 0;
 }
