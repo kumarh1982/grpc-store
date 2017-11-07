@@ -37,6 +37,8 @@ std::string filename = "vendor_addresses.txt";
 unsigned int numberOfVendors = 0;
 std::vector<std::string> vendorList;
 ThreadPool* pool;
+std::string serverAddress = "0.0.0.0:50001";
+unsigned int numberOfThreads = 5;
 
 void populateVendors () {
 	std::ifstream myfile (filename);
@@ -122,7 +124,7 @@ class ServerImpl final {
 		}
 	// There is no shutdown handling in this code.
 	void Run() {
-		std::string server_address("0.0.0.0:50001");
+		std::string server_address(serverAddress);
 	
 		ServerBuilder builder;
 		// Listen on the given address without any authentication mechanism.
@@ -180,8 +182,7 @@ class ServerImpl final {
 			  //info->set_price(4321.0);
 			  std::string name = request_.product_name();  
 			  std::vector<BidReply> result;
-			  std::vector<BidReply> result2;
-			  result = result2;
+			  
 
 			  //with threadpool
 			 /* std::vector<std::string> tempList = vendorList; //local variable to pass to threads
@@ -205,7 +206,7 @@ class ServerImpl final {
 				info->set_vendor_id(it->vendor_id());
 				info->set_price(it->price());
 			  }
-			  //delete vendorInterface;
+			  delete vendorInterface;
 			  // And we are done! Let the gRPC runtime know we've finished, using the
 			  // memory address of this instance as the uniquely identifying tag for
 			  // the event.
@@ -283,7 +284,16 @@ class ServerImpl final {
 };
 
 int main(int argc, char** argv) {
-	pool = new ThreadPool(20); //create a threadpool
+	if(argc!=3) {
+		printf("too few args - example ./store 0.0.0.0:50001 10\n");
+		return 0;
+	}
+	serverAddress = argv[1];
+	numberOfThreads = atoi(argv[2]);
+	printf("**************************** WELCOME **************************\n");
+	printf("Server starting at address %s with thread pool of %u threads!!!\n",serverAddress.c_str(),numberOfThreads);
+	printf("***************************************************************\n");
+	pool = new ThreadPool(numberOfThreads); //create a threadpool
 	populateVendors(); //fills up vendorList from file for future use
 	ServerImpl server;
 	server.Run(); //start the server
